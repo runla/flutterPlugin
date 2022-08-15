@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:my_plugin_demo/my_plugin_demo.dart';
 
+import 'AuthCode.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -23,6 +25,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     initPlatformState();
+    AuthCode.getAuthCode();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
