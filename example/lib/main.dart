@@ -6,9 +6,15 @@ import 'package:my_plugin_demo/my_plugin_demo.dart';
 
 import 'AuthCode.dart';
 
-void main() {
+void main(){
+  // 初始化
+  // MyPluginDemo.init();
+
   runApp(const MyApp());
+
 }
+
+
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -19,13 +25,22 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  final _myPluginDemoPlugin = MyPluginDemo();
+  String _accessToken = 'Unknown';
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
-    AuthCode.getAuthCode();
+    authience();
+  }
+
+  Future<void> authience() async {
+    String jwtToken = AuthCode.getAuthCode();
+    String accessToken = await MyPluginDemo.init()
+            .then((value) => MyPluginDemo.authenticate(jwtToken)) ?? "Unknown";
+    setState(() {
+      _accessToken = accessToken;
+    });
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -35,7 +50,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _myPluginDemoPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          await MyPluginDemo.getPlatformVersion() ?? 'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -58,7 +73,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Text('Running on: $_platformVersion\n_accessToken: $_accessToken'),
         ),
       ),
     );
