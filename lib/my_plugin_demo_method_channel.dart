@@ -14,4 +14,9 @@ class MethodChannelMyPluginDemo extends MyPluginDemoPlatform {
     final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
+
+  @override
+  void setText(String text) {
+    methodChannel.invokeMethod("setText", {"text": text});
+  }
 }

@@ -24,6 +24,6 @@ void main() {
     MockMyPluginDemoPlatform fakePlatform = MockMyPluginDemoPlatform();
     MyPluginDemoPlatform.instance = fakePlatform;
   
-    expect(await myPluginDemoPlugin.getPlatformVersion(), '42');
+    expect(await MyPluginDemo.getPlatformVersion(), '42');
   });
 }

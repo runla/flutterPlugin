@@ -1,28 +1,44 @@
 package com.simple.my_plugin_demo
 
+import android.util.Log
 import androidx.annotation.NonNull
+import io.flutter.embedding.engine.FlutterEngine
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.plugin.common.PluginRegistry
 
 /** MyPluginDemoPlugin */
 class MyPluginDemoPlugin: FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
+  companion object {
+    private const val TAG = "MyPlugin"
+    const val CHANNEL_NAME = "my_plugin_demo"
+    const val VIEW_TYPE_ID = "plugins.flutter.io/custom_platform_view"
+
+    private const val sGetPlatformVersion = "getPlatformVersion"
+
+  }
+
+
   private lateinit var channel : MethodChannel
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "my_plugin_demo")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL_NAME)
     channel.setMethodCallHandler(this)
+
+    val messenger: BinaryMessenger = flutterPluginBinding.binaryMessenger
+    flutterPluginBinding
+      .platformViewRegistry
+      .registerViewFactory(VIEW_TYPE_ID, MyFlutterViewFactory(messenger))
+
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
+    if (call.method == sGetPlatformVersion) {
       result.success("Android ${android.os.Build.VERSION.RELEASE}")
     } else {
       result.notImplemented()

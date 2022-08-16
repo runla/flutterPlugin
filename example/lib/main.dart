@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -67,14 +68,25 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    Widget platformView() {
+      if(defaultTargetPlatform == TargetPlatform.android) {
+        return MyPluginDemo.androidTextView("Flutter to Android TextView");
+      }
+      return Text('Running on: $_platformVersion\n_accessToken: $_accessToken');
+    }
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n_accessToken: $_accessToken'),
-        ),
+        body: Column(children: [
+          RaisedButton(
+            child: Text("传递参数给原生 View"),
+          onPressed: () {
+
+          })
+        ],),
       ),
     );
   }
